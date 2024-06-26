@@ -6,7 +6,7 @@ pipeline{
     stages{
         stage('Checkout Code from GIT'){
             steps{
-                git branch: 'main', credentialsId: 'GIT-Creds', url: 'https://github.com/Aravind-pendyala24/MySpringbootapp.git'
+                git branch: 'main', credentialsId: 'GIT-Creds', url: 'https://github.com/rachit1a/paygatway-java-aws-jenkins-docker.git'
             }
         }
         stage('Build'){
@@ -17,7 +17,7 @@ pipeline{
         stage('Build docker image'){
             steps{
                 script{
-                    sh 'docker build -t aravinduser12/simpleapp .'
+                    sh 'docker build -t rachit01/paygetway .'
                 }
             }
         }
@@ -25,8 +25,8 @@ pipeline{
             steps{
                 script{
                     withCredentials([string(credentialsId: 'dockerpwd', variable: 'dockerpwd')]){
-                        sh 'docker login -u aravinduser12 -p ${dockerpwd}'
-                        sh 'docker push aravinduser12/simpleapp'
+                        sh 'docker login -u rachit1a -p ${dockerpwd}'
+                        sh 'docker push rachit01/paygetway'
                     }
                 }
             }

@@ -14,7 +14,7 @@
 	<name>payment</name>
 	<description>Spring boot payment integration </description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>21</java.version>
 	</properties>
 	<dependencies>
 		<dependency>

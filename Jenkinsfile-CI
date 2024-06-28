@@ -1,0 +1,48 @@
+#This is jenkins file for continious integration
+pipeline {
+    agent any
+    
+    tools{
+        jdk 'jdk17'
+        maven 'maven3'
+    }
+    
+    stages {
+        stage('Git Checkout') {
+            steps {
+               git branch: 'main', url: 'https://github.com/rachit1a/paygatway-java-aws-jenkins-docker.git'
+            }
+        }
+        
+         stage('Compile') {
+            steps {
+               sh "mvn clean compile"
+            }
+        }
+        
+        stage('OWASP SCAN') {
+            steps {
+               dependencyCheck additionalArguments: ' --scan ./', odcInstallation: 'DP'
+               dependencyCheckPublisher pattern: ' **/dependency-check-report.xml'
+            }
+        }
+        
+        stage('Build & Push Docker Imag') {
+            steps {
+                script {
+                   withDockerRegistry(credentialsId: '5f35398b-6e32-4b7c-be36-bf8786a7f7f6', toolName: 'docker') {
+                        sh "docker build -t my-nodejsa-app:latest -f Dockerfile ."
+                         sh "docker tag my-nodejsa-app:latest rachit01/my-nodejsa-app:latest"
+                        sh "docker push rachit01/my-nodejsa-app:latest"
+                   }
+                }
+            }
+        }
+        
+         stage('Trigger CDD Pipeline') {
+            steps {
+               build job : "CDD", wait: true
+            }
+        } 
+    }
+}

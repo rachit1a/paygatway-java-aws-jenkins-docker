@@ -1,0 +1,16 @@
+#This is jenkins file for continious delivery
+pipeline {
+    agent any
+
+    stages {
+        stage('Docker Deploy TO Container') {
+            steps {
+                script{
+                     withDockerRegistry(credentialsId: '5f35398b-6e32-4b7c-be36-bf8786a7f7f6', toolName: 'docker') {
+                        sh "docker run -it -d --name my-nodejsa-app -p 8081:8081 rachit01/my-nodejsa-app:latest"
+                    }
+                }
+            }
+        }
+    }
+}
